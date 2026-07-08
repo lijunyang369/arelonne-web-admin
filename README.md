@@ -1,6 +1,6 @@
-# web-admin — HOPE 管理后台
+# web-admin — Arelonne 管理后台（项目代号 HOPE）
 
-🇨🇳 阿里云部署。面向国内运营团队的商品/订单管理系统。
+🇨🇳 阿里云部署。Arelonne 品牌运营后台，面向国内运营团队的商品/订单管理系统。
 
 ## 页面
 
@@ -18,4 +18,4 @@ npm run dev -- -p 3001
 
 ## 登录
 
-`admin@hope.com` / `admin123456`
+`admin@arelonne.com` / `admin123456`

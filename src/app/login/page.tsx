@@ -62,7 +62,7 @@ export default function AdminLoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
       <div className="w-full max-w-sm rounded-lg border bg-white p-8 shadow-sm">
-        <h1 className="mb-6 text-center text-xl font-semibold">HOPE 管理后台</h1>
+        <h1 className="mb-6 text-center text-xl font-semibold">Arelonne 管理后台</h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && <p className="rounded-md bg-red-50 p-3 text-sm text-red-600">{error}</p>}
@@ -71,7 +71,7 @@ export default function AdminLoginPage() {
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">邮箱</label>
             <input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
               className="mt-1 block w-full rounded-md border px-3 py-2 text-sm shadow-sm focus:border-gray-900 focus:outline-none"
-              placeholder="admin@hope.com" />
+              placeholder="admin@arelonne.com" />
           </div>
 
           <div>

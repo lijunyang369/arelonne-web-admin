@@ -58,7 +58,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
     <nav className="flex h-full flex-col bg-sidebar text-white">
       <div className="flex items-center justify-between px-5 py-5">
         <Link href="/" className="text-lg font-semibold tracking-tight" onClick={() => setOpen(false)}>
-          HOPE
+          Arelonne
         </Link>
         <button onClick={() => setOpen(false)} className="text-white/50 hover:text-white lg:hidden" aria-label="关闭菜单">
           ✕
@@ -98,7 +98,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
             <span className="block h-0.5 w-5 bg-gray-700" />
             <span className="block h-0.5 w-5 bg-gray-700" />
           </button>
-          <span className="ml-3 font-semibold">HOPE 管理后台</span>
+          <span className="ml-3 font-semibold">Arelonne 管理后台</span>
         </div>
         <main className="flex-1 p-4 lg:p-8">{children}</main>
       </div>

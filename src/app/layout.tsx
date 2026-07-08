@@ -3,7 +3,7 @@ import './globals.css';
 import { Sidebar } from '@/components/Sidebar';
 
 export const metadata: Metadata = {
-  title: 'HOPE 管理后台',
+  title: 'Arelonne 管理后台',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

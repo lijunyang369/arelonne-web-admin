@@ -4,9 +4,9 @@ export default function SettingsPage() {
       <h1 className="mb-6 text-xl font-bold text-gray-900 lg:text-2xl">系统设置</h1>
       <div className="space-y-6">
         <Section title="基本信息">
-          <Field label="站点名称" value="HOPE" />
-          <Field label="站点描述" value="Affordable Quality Womenswear" />
-          <Field label="管理员邮箱" value="admin@hope.com" />
+          <Field label="站点名称" value="Arelonne" />
+          <Field label="站点描述" value="Comfortable, Quality-Focused Womenswear" />
+          <Field label="管理员邮箱" value="admin@arelonne.com" />
         </Section>
         <Section title="配送设置">
           <Field label="免运费门槛" value="$50.00" />
