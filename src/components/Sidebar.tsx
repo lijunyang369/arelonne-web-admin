@@ -13,7 +13,9 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    // 首次挂载时验证登录状态
+    // 仅在组件挂载时执行一次：从 localStorage 读取 token 并向后端验证有效性。
+    // pathname 和 router 不应作为依赖——此 effect 只做首次登录校验，
+    // 后续路由切换由 Next.js 自身和页面级逻辑处理，不需要重新验证。
     const token = localStorage.getItem('hope_admin_token');
     const stored = localStorage.getItem('hope_admin_user');
 
@@ -35,7 +37,8 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
         if (pathname !== '/login') router.push('/login');
       })
       .finally(() => setLoading(false));
-  }, []); // 只在挂载时执行一次
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (pathname === '/login') return children;
 
@@ -50,6 +53,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
   const links = [
     { href: '/', label: '仪表盘' },
     { href: '/products', label: '商品管理' },
+    { href: '/colors', label: '颜色管理' },
     { href: '/orders', label: '订单管理' },
     { href: '/settings', label: '系统设置' },
   ];

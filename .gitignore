@@ -4,3 +4,5 @@ vendor/
 storage/
 *.log
 .DS_Store
+.next/
+tsconfig.tsbuildinfo
