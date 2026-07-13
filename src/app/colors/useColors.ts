@@ -4,8 +4,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { getColors, createColor, updateColor, deleteColor } from '@/lib/api/colors';
-import type { AdminColor } from '@/lib/api/colors';
 import { ApiError } from '@/lib/api/client';
+import type { AdminColor } from '@/lib/api/colors';
 import type { ColorFormData } from './types';
 
 const EMPTY_FORM: ColorFormData = { name: '', name_zh: '', hex: '#4F6EF7', status: 'active' };
@@ -125,7 +125,10 @@ export function useColors() {
       const targetPage = page > lastPage ? lastPage : page;
       loadColors(targetPage, pageSize, statusFilter);
       setPage(targetPage);
-    } catch { /* 静默 */ }
+    } catch (e) {
+      setDeletingId(null);
+      setError(e instanceof ApiError ? e.message : '删除失败，请重试');
+    }
   };
 
   return {
