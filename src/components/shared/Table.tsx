@@ -25,7 +25,7 @@ const PAGE_SIZE_OPTIONS = [10, 20, 50, 100] as const;
 
 export interface Column<T> {
   key: string;
-  title: string;
+  title: string | React.ReactNode;
   render?: (item: T) => React.ReactNode;
   className?: string;
   align?: 'left' | 'center' | 'right';
@@ -40,6 +40,7 @@ interface TableBase<T> {
   keyExtractor: (item: T) => string | number;
   loading?: boolean;
   emptyText?: string;
+  onRowClick?: (item: T) => void;
 }
 
 /** 服务端分页：父组件完全受控 */
@@ -153,6 +154,7 @@ export function Table<T>({
   pageSize: defaultPageSize = 20,
   total: totalProp,
   onPageChange,
+  onRowClick,
   currentPage,
   currentPageSize,
   loading = false,
@@ -216,7 +218,7 @@ export function Table<T>({
               <th
                 key={col.key}
                 style={{ textAlign: col.align || 'left' }}
-                className={`whitespace-nowrap border-b border-r border-gray-200 px-3 py-2 text-xs font-medium text-gray-500 last:border-r-0 sm:px-5 sm:py-2.5 ${col.className || ''}`}
+                className={`whitespace-nowrap border-b border-r border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-500 last:border-r-0 sm:px-4 sm:py-2 ${col.className || ''}`}
               >
                 {col.title}
               </th>
@@ -236,13 +238,14 @@ export function Table<T>({
             paged.map((item) => (
               <tr
                 key={keyExtractor(item)}
-                className="transition-colors hover:bg-gray-50"
+                className={`transition-colors hover:bg-gray-50 ${onRowClick ? 'cursor-pointer' : ''}`}
+                onClick={() => onRowClick?.(item)}
               >
                 {columns.map((col) => (
                   <td
                     key={col.key}
                     style={{ textAlign: col.align || 'left' }}
-                    className={`border-b border-r border-gray-200 px-3 py-2.5 text-sm last:border-r-0 sm:px-5 sm:py-3 ${col.className || ''}`}
+                    className={`whitespace-nowrap border-b border-r border-gray-200 px-3 py-2 text-sm last:border-r-0 sm:px-4 sm:py-2 ${col.className || ''}`}
                   >
                     {col.render
                       ? col.render(item)

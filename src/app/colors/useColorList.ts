@@ -10,7 +10,7 @@ import type { ColorFormData } from './types';
 
 const EMPTY_FORM: ColorFormData = { name: '', name_zh: '', hex: '#4F6EF7', status: 'active' };
 
-export function useColors() {
+export function useColorList() {
   // ---- 列表 ----
   const [colors, setColors] = useState<AdminColor[]>([]);
   const [total, setTotal] = useState(0);
@@ -133,7 +133,7 @@ export function useColors() {
 
   return {
     // 列表
-    colors, total, page, pageSize, loading, error, statusFilter,
+    items: colors, total, page, pageSize, loading, error, statusFilter,
     setStatusFilter, handlePageChange,
     // 模态框
     modalOpen, editingId, form, saving, formError,

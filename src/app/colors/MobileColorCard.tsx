@@ -6,7 +6,7 @@ import type { AdminColor } from '@/lib/api/colors';
 import { formatDate } from './columns';
 
 interface MobileColorCardProps {
-  colors: AdminColor[];
+  items: AdminColor[];
   loading: boolean;
   emptyText: string;
   deletingId: number | null;
@@ -21,7 +21,7 @@ interface MobileColorCardProps {
 }
 
 export function MobileColorCard({
-  colors, loading, emptyText, deletingId,
+  items, loading, emptyText, deletingId,
   page, pageSize, total, onEdit, onRequestDelete, onConfirmDelete, onCancelDelete, onPageChange,
 }: MobileColorCardProps) {
   if (loading) {
@@ -32,7 +32,7 @@ export function MobileColorCard({
     );
   }
 
-  if (colors.length === 0) {
+  if (items.length === 0) {
     return (
       <div className="rounded-lg border border-gray-200 bg-white px-5 py-12 text-center text-sm text-gray-400">
         {emptyText}
@@ -44,7 +44,7 @@ export function MobileColorCard({
 
   return (
     <div className="space-y-2">
-      {colors.map((c) => (
+      {items.map((c) => (
         <div key={c.id} className="rounded-lg border border-gray-200 bg-white p-4">
           {/* 第一行：色块 · 名称 · 状态 */}
           <div className="flex items-center gap-3">

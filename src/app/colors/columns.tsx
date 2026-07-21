@@ -67,7 +67,7 @@ export function makeColumns(opts: {
       ),
     },
     {
-      key: 'actions', title: '操作', className: 'whitespace-nowrap', align: 'center', width: '130px',
+      key: 'actions', title: '操作', className: 'whitespace-nowrap', align: 'center', width: '100px',
       render: (c) => (
         <div className="inline-flex items-center gap-0.5 whitespace-nowrap">
           <button type="button" onClick={() => onEdit(c)}

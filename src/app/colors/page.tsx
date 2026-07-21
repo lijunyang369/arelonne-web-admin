@@ -8,7 +8,7 @@
  * 新建/编辑模态框  → ColorFormModal
  */
 
-import { useColors } from './useColors';
+import { useColorList } from './useColorList';
 import { makeColumns } from './columns';
 import { MobileColorCard } from './MobileColorCard';
 import { ColorFormModal } from './ColorFormModal';
@@ -22,12 +22,12 @@ const STATUS_TABS = [
 
 export default function ColorsPage() {
   const {
-    colors, total, page, pageSize, loading, error, statusFilter,
+    items, total, page, pageSize, loading, error, statusFilter,
     setStatusFilter, handlePageChange,
     modalOpen, editingId, form, saving, formError,
     openCreate, openEdit, closeModal, handleSubmit, setForm,
     deletingId, handleDelete, setDeletingId,
-  } = useColors();
+  } = useColorList();
 
   const columns = makeColumns({
     onEdit: openEdit,
@@ -68,7 +68,7 @@ export default function ColorsPage() {
       {/* 桌面端表格 */}
       <div className="hidden md:block">
         <Table
-          columns={columns} data={colors} total={total}
+          columns={columns} data={items} total={total}
           currentPage={page} currentPageSize={pageSize}
           onPageChange={handlePageChange} keyExtractor={(c) => c.id}
           loading={loading} emptyText={emptyText}
@@ -78,7 +78,7 @@ export default function ColorsPage() {
       {/* 移动端卡片 */}
       <div className="md:hidden">
         <MobileColorCard
-          colors={colors} loading={loading} emptyText={emptyText}
+          items={items} loading={loading} emptyText={emptyText}
           deletingId={deletingId} page={page} pageSize={pageSize} total={total}
           onEdit={openEdit}
           onRequestDelete={(id) => setDeletingId(id)}
