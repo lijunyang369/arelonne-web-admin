@@ -4,6 +4,7 @@
 
 import type { Column } from '@/components/shared/Table';
 import type { AdminProduct } from '@/lib/api/products';
+import { imageUrl } from '@/lib/api/client';
 
 /** 格式化 ISO 日期为简短本地格式 */
 function formatDate(iso: string): string {
@@ -58,7 +59,7 @@ export function makeColumns(opts: MakeColumnsOpts): Column<AdminProduct>[] {
       render: (p) => {
         const img = getPrimaryImage(p.images);
         return img
-          ? <img src={img} alt={p.name} className="mx-auto h-10 w-10 rounded object-cover" />
+          ? <img src={imageUrl(img)!} alt={p.name} className="mx-auto h-10 w-10 rounded object-cover" />
           : <div className="mx-auto h-10 w-10 rounded bg-gray-100 flex items-center justify-center text-xs text-gray-300">无</div>;
       },
     },

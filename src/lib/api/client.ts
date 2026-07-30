@@ -4,6 +4,16 @@
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081/api';
 
+/** 图片资源基域名（API_BASE 去掉 /api 后缀） */
+const IMAGE_BASE = API_BASE.replace(/\/api\/?$/, '');
+
+/** 补全图片相对路径为绝对 URL */
+export function imageUrl(path: string | null | undefined): string | null {
+  if (!path) return null;
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  return IMAGE_BASE + path;
+}
+
 export class ApiError extends Error {
   constructor(
     public status: number,

@@ -4,6 +4,7 @@
 
 import type { AdminProduct } from '@/lib/api/products';
 import { formatDate } from './columns';
+import { imageUrl } from '@/lib/api/client';
 
 /** 获取列表主图 URL */
 function getPrimaryImage(images: AdminProduct['images']): string | null {
@@ -68,7 +69,7 @@ export function MobileProductCard({
             {/* 第一行：图片 · 名称 · 状态 */}
             <div className="flex items-center gap-3">
               {img
-                ? <img src={img} alt={p.name} className="h-12 w-12 flex-shrink-0 rounded object-cover" />
+                ? <img src={imageUrl(img)!} alt={p.name} className="h-12 w-12 flex-shrink-0 rounded object-cover" />
                 : <div className="h-12 w-12 flex-shrink-0 rounded bg-gray-100 flex items-center justify-center text-xs text-gray-300">无</div>
               }
               <div className="min-w-0 flex-1">

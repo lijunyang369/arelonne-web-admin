@@ -6,6 +6,7 @@
 
 import { useImages } from './hooks/useImages';
 import type { ProductFormData } from '../types';
+import { imageUrl } from '@/lib/api/client';
 
 interface ImagesTabProps {
   form: ProductFormData;
@@ -73,7 +74,7 @@ export function ImagesTab({ form, setForm }: ImagesTabProps) {
                   {skc.images.map((img, j) => (
                     <div key={j} className="relative w-28 flex-shrink-0 rounded-lg border border-gray-200 bg-white p-2">
                       {img.url ? (
-                        <img src={img.url} alt={img.alt || skc.color}
+                        <img src={imageUrl(img.url)!} alt={img.alt || skc.color}
                           className="mb-2 h-24 w-full rounded object-cover" />
                       ) : (
                         <div className="mb-2 flex h-24 w-full items-center justify-center rounded bg-gray-100 text-xs text-gray-300">
