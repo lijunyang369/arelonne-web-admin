@@ -43,7 +43,8 @@ export default function SettingsPage() {
       ]);
       setSaved(true);
     } catch {
-      // 保存失败时静默（表单保留输入值，用户可重试）
+      // 保存失败时给出可见反馈（表单保留输入值，用户可重试）
+      alert('保存失败，请重试');
     } finally {
       setSaving(false);
     }
@@ -80,9 +81,12 @@ export default function SettingsPage() {
             </label>
             <div className="flex items-center justify-end gap-3 border-t border-gray-100 pt-4">
               {saved && <span className="text-sm text-green-600">已保存</span>}
+              {(!freeThreshold.trim() || !shippingFee.trim()) && (
+                <span className="text-sm text-amber-600">请输入运费门槛与运费金额</span>
+              )}
               <button
                 onClick={handleSave}
-                disabled={saving || loading}
+                disabled={saving || loading || !freeThreshold.trim() || !shippingFee.trim()}
                 className="rounded bg-gray-900 px-5 py-2 text-sm font-medium text-white hover:bg-gray-700 disabled:opacity-50"
               >
                 {saving ? '保存中…' : '保存'}
