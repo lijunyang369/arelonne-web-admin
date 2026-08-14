@@ -46,8 +46,8 @@ export default function SettingsPage() {
       !freeThreshold.trim() || !shippingFee.trim() ||
       !Number.isFinite(threshold) || !Number.isFinite(fee) ||
       threshold < 0 || fee < 0 || threshold > 100000 || fee > 100000 ||
-      Math.round(threshold * 100) !== threshold * 100 ||
-      Math.round(fee * 100) !== fee * 100
+      Math.abs(Math.round(threshold * 100) - threshold * 100) > 1e-6 ||
+      Math.abs(Math.round(fee * 100) - fee * 100) > 1e-6
     ) {
       setValidationError('请输入有效的非负金额（最多两位小数，不超过 100000）');
       setSaved(false);
