@@ -2,7 +2,7 @@
  * 站点设置 API 请求。
  */
 
-import { apiFetch, adminFetch } from './client';
+import { adminFetch } from './client';
 
 /** 设置项 */
 export interface SettingItem {

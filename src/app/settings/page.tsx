@@ -11,11 +11,12 @@ import { getSettings, updateSettings } from '@/lib/api/settings';
 const TOKEN_KEY = 'hope_admin_token';
 
 export default function SettingsPage() {
-  const [freeThreshold, setFreeThreshold] = useState('');
-  const [shippingFee, setShippingFee] = useState('');
+  const [freeThreshold, setFreeThreshold] = useState('50');
+  const [shippingFee, setShippingFee] = useState('5.99');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [loadError, setLoadError] = useState(false);
 
   // 加载现有设置
   useEffect(() => {
@@ -28,11 +29,15 @@ export default function SettingsPage() {
         }
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => {
+        setLoadError(true);
+        setLoading(false);
+      });
   }, []);
 
   // 保存
   const handleSave = useCallback(async () => {
+    if (loadError) return;
     const token = localStorage.getItem(TOKEN_KEY) ?? '';
     setSaving(true);
     setSaved(false);
@@ -48,12 +53,17 @@ export default function SettingsPage() {
     } finally {
       setSaving(false);
     }
-  }, [freeThreshold, shippingFee]);
+  }, [freeThreshold, shippingFee, loadError]);
 
   return (
     <div>
       <h1 className="mb-6 text-xl font-bold text-gray-900 lg:text-2xl">系统设置</h1>
       <div className="space-y-6">
+        {loadError && (
+          <div className="rounded-lg border border-amber-300 bg-amber-50 px-5 py-4 text-sm text-amber-800">
+            设置加载失败，为避免覆盖现有配置，请刷新页面重试。
+          </div>
+        )}
         <div className="rounded-lg border border-gray-200 bg-white">
           <h2 className="border-b px-5 py-4 text-sm font-semibold text-gray-700">配送设置</h2>
           <div className="space-y-5 px-5 py-5">
@@ -64,7 +74,10 @@ export default function SettingsPage() {
                 min="0"
                 step="0.01"
                 value={freeThreshold}
-                onChange={(e) => setFreeThreshold(e.target.value)}
+                onChange={(e) => {
+                  setFreeThreshold(e.target.value);
+                  setSaved(false);
+                }}
                 className="w-32 rounded border border-gray-300 px-3 py-1.5 text-right text-gray-900 focus:border-gray-500 focus:outline-none"
               />
             </label>
@@ -75,7 +88,10 @@ export default function SettingsPage() {
                 min="0"
                 step="0.01"
                 value={shippingFee}
-                onChange={(e) => setShippingFee(e.target.value)}
+                onChange={(e) => {
+                  setShippingFee(e.target.value);
+                  setSaved(false);
+                }}
                 className="w-32 rounded border border-gray-300 px-3 py-1.5 text-right text-gray-900 focus:border-gray-500 focus:outline-none"
               />
             </label>
@@ -86,7 +102,7 @@ export default function SettingsPage() {
               )}
               <button
                 onClick={handleSave}
-                disabled={saving || loading || !freeThreshold.trim() || !shippingFee.trim()}
+                disabled={saving || loading || loadError || !freeThreshold.trim() || !shippingFee.trim()}
                 className="rounded bg-gray-900 px-5 py-2 text-sm font-medium text-white hover:bg-gray-700 disabled:opacity-50"
               >
                 {saving ? '保存中…' : '保存'}
