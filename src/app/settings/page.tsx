@@ -17,6 +17,7 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [loadError, setLoadError] = useState(false);
+  const [validationError, setValidationError] = useState('');
 
   // 加载现有设置
   useEffect(() => {
@@ -38,6 +39,21 @@ export default function SettingsPage() {
   // 保存
   const handleSave = useCallback(async () => {
     if (loadError) return;
+    // 保存前显式校验数值（输入框 min/step 对直接调用无效）
+    const threshold = Number(freeThreshold);
+    const fee = Number(shippingFee);
+    if (
+      !freeThreshold.trim() || !shippingFee.trim() ||
+      !Number.isFinite(threshold) || !Number.isFinite(fee) ||
+      threshold < 0 || fee < 0 || threshold > 100000 || fee > 100000 ||
+      Math.round(threshold * 100) !== threshold * 100 ||
+      Math.round(fee * 100) !== fee * 100
+    ) {
+      setValidationError('请输入有效的非负金额（最多两位小数，不超过 100000）');
+      setSaved(false);
+      return;
+    }
+    setValidationError('');
     const token = localStorage.getItem(TOKEN_KEY) ?? '';
     setSaving(true);
     setSaved(false);
@@ -74,11 +90,13 @@ export default function SettingsPage() {
                 min="0"
                 step="0.01"
                 value={freeThreshold}
+                disabled={loading || saving}
                 onChange={(e) => {
                   setFreeThreshold(e.target.value);
                   setSaved(false);
+                  setValidationError('');
                 }}
-                className="w-32 rounded border border-gray-300 px-3 py-1.5 text-right text-gray-900 focus:border-gray-500 focus:outline-none"
+                className="w-32 rounded border border-gray-300 px-3 py-1.5 text-right text-gray-900 focus:border-gray-500 focus:outline-none disabled:opacity-50"
               />
             </label>
             <label className="flex items-center justify-between text-sm">
@@ -88,14 +106,19 @@ export default function SettingsPage() {
                 min="0"
                 step="0.01"
                 value={shippingFee}
+                disabled={loading || saving}
                 onChange={(e) => {
                   setShippingFee(e.target.value);
                   setSaved(false);
+                  setValidationError('');
                 }}
-                className="w-32 rounded border border-gray-300 px-3 py-1.5 text-right text-gray-900 focus:border-gray-500 focus:outline-none"
+                className="w-32 rounded border border-gray-300 px-3 py-1.5 text-right text-gray-900 focus:border-gray-500 focus:outline-none disabled:opacity-50"
               />
             </label>
             <div className="flex items-center justify-end gap-3 border-t border-gray-100 pt-4">
+              {validationError && (
+                <p className="text-sm text-red-600">{validationError}</p>
+              )}
               {saved && <span className="text-sm text-green-600">已保存</span>}
               {(!freeThreshold.trim() || !shippingFee.trim()) && (
                 <span className="text-sm text-amber-600">请输入运费门槛与运费金额</span>
