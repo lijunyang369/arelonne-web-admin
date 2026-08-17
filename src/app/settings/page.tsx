@@ -11,8 +11,8 @@ import { getSettings, updateSettings } from '@/lib/api/settings';
 const TOKEN_KEY = 'hope_admin_token';
 
 export default function SettingsPage() {
-  const [freeThreshold, setFreeThreshold] = useState('50');
-  const [shippingFee, setShippingFee] = useState('5.99');
+  const [freeThreshold, setFreeThreshold] = useState('69');
+  const [shippingFee, setShippingFee] = useState('8.99');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
