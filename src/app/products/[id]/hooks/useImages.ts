@@ -50,7 +50,7 @@ export function useImages(
   };
 
   const addImage = (skcIndex: number) => {
-    const newImage: ProductImageItem = { url: '', alt: '', sort: form.skcs[skcIndex].images.length, is_primary: false };
+    const newImage: ProductImageItem = { url: '', thumb_url: '', alt: '', sort: form.skcs[skcIndex].images.length, is_primary: false };
     const skcs = form.skcs.map((s, i) =>
       i === skcIndex ? { ...s, images: [...s.images, newImage] } : s
     );

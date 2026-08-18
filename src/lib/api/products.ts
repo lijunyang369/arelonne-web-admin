@@ -11,6 +11,8 @@ import { adminFetch } from './client';
 export interface AdminProductImage {
   id: number;
   url: string;
+  /** 480 宽缩略图（api Resource 派生） */
+  thumb_url: string;
   alt: string | null;
   sort: number;
   is_primary: boolean;
@@ -26,6 +28,17 @@ export interface AdminVariant {
   image: string | null;
 }
 
+/** SKC 颜色组（Task 7 详情接口新增） */
+export interface AdminProductSkc {
+  id: number;
+  color: string;
+  color_hex: string;
+  slug: string;
+  status: string;
+  sort: number;
+  images: AdminProductImage[];
+}
+
 export interface AdminProduct {
   id: number;
   name: string;
@@ -37,6 +50,8 @@ export interface AdminProduct {
   status: 'draft' | 'active' | 'inactive';
   meta: Record<string, unknown> | null;
   images: AdminProductImage[];
+  /** SKC 颜色组（详情接口返回；列表接口未加载时为空数组） */
+  skcs: AdminProductSkc[];
   created_at: string;
 }
 

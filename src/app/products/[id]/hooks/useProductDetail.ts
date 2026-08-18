@@ -50,8 +50,24 @@ export function useProductDetail(id: string) {
           status: detail.status,
           sort: detail.sort ?? 0,
         },
-        skcs: [],   // SKC 和变体由独立 hook 管理
-        variants: [],
+        // 详情接口 skcs 映射为表单 SKC 组（结构与 useImages 一致，UI 默认折叠）
+        skcs: (detail.skcs ?? []).map((s) => ({
+          id: s.id,
+          color: s.color,
+          color_hex: s.color_hex,
+          slug: s.slug,
+          sort: s.sort,
+          expanded: false,
+          images: s.images.map((img) => ({
+            id: img.id,
+            url: img.url,
+            thumb_url: img.thumb_url,
+            alt: img.alt ?? '',
+            sort: img.sort,
+            is_primary: img.is_primary,
+          })),
+        })),
+        variants: [],   // 变体由独立 hook 管理
         meta: detail.meta || {},
       });
     } catch (e) {

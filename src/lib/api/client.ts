@@ -4,14 +4,15 @@
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081/api';
 
-/** 图片资源基域名（API_BASE 去掉 /api 后缀） */
-const IMAGE_BASE = API_BASE.replace(/\/api\/?$/, '');
+/** 图片 CDN 基址（dev 指向 web-store 本地服务，生产指向 cdn.arelonne.com） */
+const IMAGE_BASE = (process.env.NEXT_PUBLIC_IMAGE_BASE_URL ?? '').replace(/\/+$/, '');
 
-/** 补全图片相对路径为绝对 URL */
+/** 补全图片相对路径为绝对 URL（外站 URL 原样返回） */
 export function imageUrl(path: string | null | undefined): string | null {
   if (!path) return null;
   if (path.startsWith('http://') || path.startsWith('https://')) return path;
-  return IMAGE_BASE + path;
+  if (!IMAGE_BASE) return null; // 未配置基址时不猜测
+  return IMAGE_BASE + (path.startsWith('/') ? path : `/${path}`);
 }
 
 export class ApiError extends Error {
@@ -57,4 +58,10 @@ export async function adminFetch<T = unknown>(endpoint: string, token: string, o
       'Authorization': `Bearer ${token}`,
     },
   });
+}
+
+/** 读取认证 token（localStorage key 与登录页写入保持一致；SSR 场景返回 null） */
+export function getAuthToken(): string | null {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem('hope_admin_token');
 }

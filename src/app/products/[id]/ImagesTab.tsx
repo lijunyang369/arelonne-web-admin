@@ -7,6 +7,7 @@
 import { useImages } from './hooks/useImages';
 import type { ProductFormData } from '../types';
 import { imageUrl } from '@/lib/api/client';
+import { ImageUploadButton } from '@/components/ImageUploadButton';
 
 interface ImagesTabProps {
   form: ProductFormData;
@@ -74,7 +75,7 @@ export function ImagesTab({ form, setForm }: ImagesTabProps) {
                   {skc.images.map((img, j) => (
                     <div key={j} className="relative w-28 flex-shrink-0 rounded-lg border border-gray-200 bg-white p-2">
                       {img.url ? (
-                        <img src={imageUrl(img.url)!} alt={img.alt || skc.color}
+                        <img src={imageUrl(img.thumb_url || img.url)!} alt={img.alt || skc.color}
                           className="mb-2 h-24 w-full rounded object-cover" />
                       ) : (
                         <div className="mb-2 flex h-24 w-full items-center justify-center rounded bg-gray-100 text-xs text-gray-300">
@@ -84,6 +85,9 @@ export function ImagesTab({ form, setForm }: ImagesTabProps) {
                       <input type="text" value={img.url} placeholder="图片 URL"
                         onChange={(e) => updateImage(i, j, { url: e.target.value })}
                         className="mb-1 block w-full rounded border border-gray-200 px-1.5 py-0.5 text-xs focus:border-gray-900 focus:outline-none" />
+                      <ImageUploadButton
+                        onUploaded={(url, thumbUrl) => updateImage(i, j, { url, thumb_url: thumbUrl })}
+                      />
                       <div className="flex items-center justify-between mt-1">
                         <label className="flex items-center gap-1 text-xs text-gray-400 cursor-pointer">
                           <input type="radio" name={`primary-${i}`} checked={img.is_primary}

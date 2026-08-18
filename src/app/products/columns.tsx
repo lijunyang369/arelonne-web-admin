@@ -13,11 +13,11 @@ function formatDate(iso: string): string {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
-/** 获取列表主图 URL */
+/** 获取列表主图 URL（优先 480 缩略图） */
 function getPrimaryImage(images: AdminProduct['images']): string | null {
   if (!images || images.length === 0) return null;
   const primary = images.find((img) => img.is_primary);
-  return primary?.url ?? images[0]?.url ?? null;
+  return primary?.thumb_url ?? primary?.url ?? images[0]?.thumb_url ?? images[0]?.url ?? null;
 }
 
 interface MakeColumnsOpts {

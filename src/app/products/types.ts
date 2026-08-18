@@ -19,6 +19,8 @@ export interface ProductBasicInfo {
 export interface ProductImageItem {
   id?: number;
   url: string;
+  /** 480 宽缩略图（详情接口返回；表单新建图片时为空字符串，经 `||` 回退原图） */
+  thumb_url: string;
   alt: string;
   sort: number;
   is_primary: boolean;
@@ -29,6 +31,8 @@ export interface SkcGroup {
   id?: number;
   color: string;
   color_hex: string;
+  /** 颜色 slug（详情接口带回，表单暂不编辑） */
+  slug?: string;
   sort: number;
   images: ProductImageItem[];
   expanded: boolean;        // UI 状态：折叠/展开
