@@ -134,6 +134,8 @@ export function useSizeOptionList() {
       loadItems();
     } catch (e) {
       setError(e instanceof ApiError ? e.message : '操作失败，请重试');
+      // 补偿:交换可能部分生效,重新拉取保证 UI 与服务端一致
+      loadItems();
     } finally {
       setMovingId(null);
     }
@@ -141,8 +143,12 @@ export function useSizeOptionList() {
 
   // ---- 删除 ----
 
+  /** 删除请求进行中(禁用确认/取消按钮,防双击重复 DELETE) */
+  const [deleting, setDeleting] = useState(false);
+
   /** 删除尺码(被商品引用时后端 422,错误条展示 message) */
   const handleDelete = async (id: number) => {
+    setDeleting(true);
     try {
       await deleteSizeOption(getToken(), id);
       setDeletingId(null);
@@ -150,6 +156,8 @@ export function useSizeOptionList() {
     } catch (e) {
       setDeletingId(null);
       setError(e instanceof ApiError ? e.message : '删除失败，请重试');
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -162,6 +170,6 @@ export function useSizeOptionList() {
     // 排序调整
     movingId, handleMove,
     // 删除
-    deletingId, handleDelete, setDeletingId,
+    deletingId, deleting, handleDelete, setDeletingId,
   };
 }

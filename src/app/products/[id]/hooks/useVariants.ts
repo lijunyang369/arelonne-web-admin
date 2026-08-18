@@ -33,11 +33,12 @@ export function useVariants(
   setForm: (f: ProductFormData) => void,
 ): UseVariantsReturn {
   const [sizes, setSizes] = useState<string[]>(() => {
-    // 初始只取已有变体尺码(历史尺寸必保),API 列表异步加载后合并
-    return Array.from(new Set(form.variants.map((v) => v.size)));
+    // 初始用 DEFAULT_SIZES 占位(新建商品立即有尺码列),API 返回后替换
+    const existing = Array.from(new Set(form.variants.map((v) => v.size)));
+    return mergeSizes(DEFAULT_SIZES, existing);
   });
 
-  // 挂载时拉取 size-options 列表,与当前尺码合并去重;请求失败回退 DEFAULT_SIZES
+  // 挂载时拉取 size-options 列表替换占位;请求失败保留 DEFAULT_SIZES 回退
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -45,7 +46,13 @@ export function useVariants(
         const token = localStorage.getItem('hope_admin_token') || '';
         const options = await getSizeOptions(token);
         if (!cancelled) {
-          setSizes((prev) => mergeSizes(options.map((o) => o.name), prev));
+          setSizes((prev) => {
+            // 以 API 列表为准,剔除 DEFAULT_SIZES 占位,保留已有变体与自定义尺码(历史尺寸不丢)
+            const existing = form.variants.map((v) => v.size);
+            const existingSet = new Set(existing);
+            const custom = prev.filter((s) => !DEFAULT_SIZES.includes(s) && !existingSet.has(s));
+            return mergeSizes(options.map((o) => o.name), Array.from(new Set([...existing, ...custom])));
+          });
         }
       } catch {
         if (!cancelled) {
@@ -56,7 +63,7 @@ export function useVariants(
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const slug = form.basic.slug || 'product';
 

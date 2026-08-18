@@ -14,7 +14,7 @@ import { SizeOptionFormModal } from './SizeOptionFormModal';
 
 /** 行操作按钮组(上移/下移/编辑/删除;删除带行内二次确认) */
 function RowActions({
-  opt, index, total, moving, deleting,
+  opt, index, total, moving, deleting, busy,
   onMove, onEdit, onRequestDelete, onConfirmDelete, onCancelDelete,
 }: {
   opt: SizeOption;
@@ -22,6 +22,8 @@ function RowActions({
   total: number;
   moving: boolean;
   deleting: boolean;
+  /** 删除请求进行中(禁用确认/取消,防双击重复 DELETE) */
+  busy: boolean;
   onMove: (index: number, dir: -1 | 1) => void;
   onEdit: (opt: SizeOption) => void;
   onRequestDelete: (id: number) => void;
@@ -40,12 +42,12 @@ function RowActions({
         className={btn}>编辑</button>
       {deleting ? (
         <>
-          <button type="button" onClick={() => onConfirmDelete(opt.id)}
-            className="rounded px-1.5 py-1 text-xs font-medium text-red-600 transition-colors hover:bg-red-50">
+          <button type="button" disabled={busy} onClick={() => onConfirmDelete(opt.id)}
+            className="rounded px-1.5 py-1 text-xs font-medium text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 disabled:hover:bg-transparent">
             确认
           </button>
-          <button type="button" onClick={onCancelDelete}
-            className={btn}>取消</button>
+          <button type="button" disabled={busy} onClick={onCancelDelete}
+            className={`${btn} disabled:opacity-50 disabled:hover:bg-transparent`}>取消</button>
         </>
       ) : (
         <button type="button" onClick={() => onRequestDelete(opt.id)}
@@ -63,7 +65,7 @@ export default function SizeOptionsPage() {
     modalOpen, editingId, form, saving, formError,
     openCreate, openEdit, closeModal, handleSubmit, setForm,
     movingId, handleMove,
-    deletingId, handleDelete, setDeletingId,
+    deletingId, deleting, handleDelete, setDeletingId,
   } = useSizeOptionList();
 
   const emptyText = '暂无尺码，点击「添加尺码」创建';
@@ -71,6 +73,7 @@ export default function SizeOptionsPage() {
   // 操作按钮组公共参数
   const actionsProps = {
     moving: movingId !== null,
+    busy: deleting,
     onMove: handleMove,
     onEdit: openEdit,
     onRequestDelete: (id: number) => setDeletingId(id),
@@ -99,10 +102,13 @@ export default function SizeOptionsPage() {
         <div className="rounded-lg border border-gray-200 bg-white px-5 py-12 text-center text-sm text-gray-400">
           加载中...
         </div>
-      ) : items.length === 0 ? (
+      ) : items.length === 0 && !error ? (
         <div className="rounded-lg border border-gray-200 bg-white px-5 py-12 text-center text-sm text-gray-400">
           {emptyText}
         </div>
+      ) : items.length === 0 ? (
+        // 加载失败且无数据:仅展示顶部错误条,不重复渲染空态
+        null
       ) : (
         <>
           {/* 桌面端表格 */}
