@@ -74,5 +74,5 @@ export const EMPTY_FORM: ProductFormData = {
   meta: {},
 };
 
-/** 预设尺码列表 */
-export const DEFAULT_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+/** 预设尺码列表 — 与品牌尺码表一致（XS–XL 五码，2026-08-18 定稿） */
+export const DEFAULT_SIZES = ['XS', 'S', 'M', 'L', 'XL'];
