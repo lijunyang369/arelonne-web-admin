@@ -110,21 +110,30 @@ export function MobileCategoryCard({
               )}
             </div>
 
-            {/* 子分类行:短横连接线 + 名称/slug/sort/状态 */}
+            {/* 子分类行:短横连接线 + 名称/状态 + 操作 */}
             {children.length > 0 && (
-              <div className="mt-2 space-y-1.5">
+              <div className="mt-2 space-y-2">
                 {children.map((child) => {
                   const childInactive = child.status === 'inactive';
                   return (
-                    <div key={child.id} className="flex items-center gap-2">
-                      <span aria-hidden className="h-px w-3 flex-shrink-0 bg-gray-200" />
-                      <p className={`min-w-0 flex-1 truncate text-sm ${childInactive ? 'text-gray-400' : 'text-gray-600'}`}>
-                        {child.name}
-                      </p>
-                      <StatusDot status={child.status} />
-                      {childInactive && (
-                        <span className="flex-shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-500">已停用</span>
-                      )}
+                    <div key={child.id}>
+                      <div className="flex items-center gap-2">
+                        <span aria-hidden className="h-px w-3 flex-shrink-0 bg-gray-200" />
+                        <p className={`min-w-0 flex-1 truncate text-sm ${childInactive ? 'text-gray-400' : 'text-gray-600'}`}>
+                          {child.name}
+                        </p>
+                        <StatusDot status={child.status} />
+                        {childInactive && (
+                          <span className="flex-shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-500">已停用</span>
+                        )}
+                      </div>
+                      <div className="mt-1 flex justify-end">
+                        <RowActions
+                          cat={child} deletingId={deletingId}
+                          onEdit={onEdit} onToggleStatus={onToggleStatus}
+                          onRequestDelete={onRequestDelete} onConfirmDelete={onConfirmDelete} onCancelDelete={onCancelDelete}
+                        />
+                      </div>
                     </div>
                   );
                 })}
