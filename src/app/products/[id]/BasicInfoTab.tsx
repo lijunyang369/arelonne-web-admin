@@ -6,7 +6,7 @@
 
 import { useEffect, useState } from 'react';
 import { getCategories } from '@/lib/api/categories';
-import type { AdminCategory } from '@/lib/api/categories';
+import type { CategoryNode } from '@/lib/api/categories';
 import type { ProductFormData, ProductBasicInfo } from '../types';
 
 interface BasicInfoTabProps {
@@ -22,12 +22,31 @@ const STATUS_OPTIONS = [
 
 export function BasicInfoTab({ form, updateBasic }: BasicInfoTabProps) {
   const { basic } = form;
-  const [categories, setCategories] = useState<AdminCategory[]>([]);
+  /** 活跃分类树(选择器数据源,status=active) */
+  const [categories, setCategories] = useState<CategoryNode[]>([]);
+  /** 全量分类树(含停用,用于把当前已停用分类并入下拉并标注) */
+  const [allCategories, setAllCategories] = useState<CategoryNode[]>([]);
 
   useEffect(() => {
     const token = localStorage.getItem('hope_admin_token') || '';
     getCategories(token).then(setCategories).catch(() => {});
+    getCategories(token, 'all').then(setAllCategories).catch(() => {});
   }, []);
+
+  // 当前商品分类若已不在 active 列表且全量列表中为停用,追加为下拉项并标注「已停用」
+  const currentInactive = (() => {
+    if (!basic.category_id) return null;
+    const activeIds = new Set<number>();
+    categories.forEach((c) => {
+      activeIds.add(c.id);
+      (c.children ?? []).forEach((ch) => activeIds.add(ch.id));
+    });
+    if (activeIds.has(basic.category_id)) return null;
+    const cur = allCategories
+      .flatMap((c) => [c, ...(c.children ?? [])])
+      .find((c) => c.id === basic.category_id);
+    return cur && cur.status === 'inactive' ? cur : null;
+  })();
 
   return (
     <div className="max-w-xl space-y-4">
@@ -75,6 +94,9 @@ export function BasicInfoTab({ form, updateBasic }: BasicInfoTabProps) {
             ) : (
               <option key={cat.id} value={cat.id}>{cat.name}</option>
             )
+          )}
+          {currentInactive && (
+            <option value={currentInactive.id}>{currentInactive.name}（已停用）</option>
           )}
         </select>
       </div>
