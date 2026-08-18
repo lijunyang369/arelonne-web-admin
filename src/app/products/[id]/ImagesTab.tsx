@@ -4,6 +4,7 @@
  * 商品编辑页 — Tab 2：SKC 颜色组 + 图片管理。
  */
 
+import type { Dispatch, SetStateAction } from 'react';
 import { useImages } from './hooks/useImages';
 import type { ProductFormData } from '../types';
 import { imageUrl } from '@/lib/api/client';
@@ -11,7 +12,7 @@ import { ImageUploadButton } from '@/components/ImageUploadButton';
 
 interface ImagesTabProps {
   form: ProductFormData;
-  setForm: (f: ProductFormData) => void;
+  setForm: Dispatch<SetStateAction<ProductFormData>>;
 }
 
 export function ImagesTab({ form, setForm }: ImagesTabProps) {
@@ -83,7 +84,7 @@ export function ImagesTab({ form, setForm }: ImagesTabProps) {
                         </div>
                       )}
                       <input type="text" value={img.url} placeholder="图片 URL"
-                        onChange={(e) => updateImage(i, j, { url: e.target.value })}
+                        onChange={(e) => updateImage(i, j, { url: e.target.value, thumb_url: '' })}
                         className="mb-1 block w-full rounded border border-gray-200 px-1.5 py-0.5 text-xs focus:border-gray-900 focus:outline-none" />
                       <ImageUploadButton
                         onUploaded={(url, thumbUrl) => updateImage(i, j, { url, thumb_url: thumbUrl })}

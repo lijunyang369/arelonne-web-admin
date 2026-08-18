@@ -32,7 +32,7 @@ export interface AdminVariant {
 export interface AdminProductSkc {
   id: number;
   color: string;
-  color_hex: string;
+  color_hex: string | null;
   slug: string;
   status: string;
   sort: number;

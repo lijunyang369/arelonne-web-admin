@@ -54,7 +54,7 @@ export function useProductDetail(id: string) {
         skcs: (detail.skcs ?? []).map((s) => ({
           id: s.id,
           color: s.color,
-          color_hex: s.color_hex,
+          color_hex: s.color_hex ?? '#000000',
           slug: s.slug,
           sort: s.sort,
           expanded: false,
