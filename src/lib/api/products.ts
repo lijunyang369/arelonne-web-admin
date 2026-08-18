@@ -102,6 +102,24 @@ export interface ProductCreateData {
   meta?: Record<string, unknown> | null;
 }
 
+/** SKC 图片快照（更新接口 skcs 提交结构；thumb_url 为 Resource 派生展示用，不提交） */
+export interface ProductSkcImageInput {
+  color: string;
+  color_hex: string | null;
+  slug: string;
+  images: Array<{
+    url: string;
+    alt: string | null;
+    sort: number;
+    is_primary: boolean;
+  }>;
+}
+
+/** 更新商品请求（update 接口额外接受 skcs 快照；create 不发送） */
+export interface ProductUpdateData extends Partial<ProductCreateData> {
+  skcs?: ProductSkcImageInput[];
+}
+
 // ============================================================================
 // API 方法
 // ============================================================================
@@ -143,7 +161,7 @@ export async function createProduct(
 export async function updateProduct(
   token: string,
   id: number,
-  data: Partial<ProductCreateData>,
+  data: ProductUpdateData,
 ): Promise<AdminProductDetail> {
   const res = await adminFetch<ProductDetailResponse>(`/admin/products/${id}`, token, {
     method: 'PUT',

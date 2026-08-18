@@ -108,7 +108,19 @@ export function useProductDetail(id: string) {
       if (isNew) {
         await createProduct(getToken(), payload);
       } else {
-        await updateProduct(getToken(), Number(id), payload);
+        // SKC/图片快照随保存持久化：expanded/thumb_url 为 UI/展示字段不提交；
+        // 新增颜色组无 slug 时按导入管线约定派生（{商品id}-{商品slug}-{颜色}）
+        const skcs = form.skcs
+          .filter((s) => s.color.trim() !== '')
+          .map((s) => ({
+            color: s.color,
+            color_hex: s.color_hex || null,
+            slug: s.slug || `${Number(id)}-${basic.slug}-${s.color.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')}`,
+            images: s.images
+              .filter((img) => img.url.trim() !== '')
+              .map((img) => ({ url: img.url.trim(), alt: img.alt || null, sort: img.sort, is_primary: img.is_primary })),
+          }));
+        await updateProduct(getToken(), Number(id), { ...payload, skcs });
       }
       router.push('/products');
     } catch (e) {
