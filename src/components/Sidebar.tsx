@@ -54,6 +54,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
     { href: '/', label: '仪表盘' },
     { href: '/products', label: '商品管理' },
     { href: '/categories', label: '品类管理' },
+    { href: '/size-options', label: '尺码管理' },
     { href: '/colors', label: '颜色管理' },
     { href: '/orders', label: '订单管理' },
     { href: '/settings', label: '系统设置' },

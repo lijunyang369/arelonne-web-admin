@@ -2,9 +2,10 @@
  * 商品编辑页 — SKU 变体管理逻辑。
  */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { ProductVariantItem, ProductFormData } from '../../types';
 import { DEFAULT_SIZES } from '../../types';
+import { getSizeOptions } from '@/lib/api/sizeOptions';
 
 interface UseVariantsReturn {
   sizes: string[];
@@ -22,15 +23,40 @@ interface UseVariantsReturn {
   slug: string;
 }
 
+/** 合并尺码列表:base 在前、existing 在后去重(历史尺寸不丢,即使已不在列表中) */
+function mergeSizes(base: string[], existing: string[]): string[] {
+  return Array.from(new Set([...base, ...existing]));
+}
+
 export function useVariants(
   form: ProductFormData,
   setForm: (f: ProductFormData) => void,
 ): UseVariantsReturn {
   const [sizes, setSizes] = useState<string[]>(() => {
-    // 从已有变体提取尺码 + 默认尺码
-    const existing = Array.from(new Set(form.variants.map((v) => v.size)));
-    return Array.from(new Set([...DEFAULT_SIZES, ...existing]));
+    // 初始只取已有变体尺码(历史尺寸必保),API 列表异步加载后合并
+    return Array.from(new Set(form.variants.map((v) => v.size)));
   });
+
+  // 挂载时拉取 size-options 列表,与当前尺码合并去重;请求失败回退 DEFAULT_SIZES
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const token = localStorage.getItem('hope_admin_token') || '';
+        const options = await getSizeOptions(token);
+        if (!cancelled) {
+          setSizes((prev) => mergeSizes(options.map((o) => o.name), prev));
+        }
+      } catch {
+        if (!cancelled) {
+          setSizes((prev) => mergeSizes(DEFAULT_SIZES, prev));
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const slug = form.basic.slug || 'product';
 
